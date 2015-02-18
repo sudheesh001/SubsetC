@@ -55,3 +55,48 @@
 	char varname[50];
 	int val;
 }
+
+%token DOT COLON EQUALS SEMI_COLON HASH DOUBLE_QUOTES SINGLE_QUOTES OPEN_PARANTHESES CLOSE_PARANTHESES
+%token OPEN_BRACES CLOSE_BRACES COMMA OPEN_SQ_BRACKET CLOSE_SQ_BRACKET THREE_DOT
+
+%token INCREMENT DECREMENT ADD SUBTRACT MULTIPLY DIVIDE MOD
+%token NOT AND OR LESS_THAN LESS_THAN_EQUAL GREATER_THAN GREATER_THAN_EQUAL
+%token IS_EQUAL_TO NOT_EQUAL_TO BITWISE_AND BITWISE_OR NEGATION XOR R_SHIFT L_SHIFT
+
+%token SHORTHAND_ADD SHORTHAND_SUB SHORTHAND_MUL SHORTHAND_DIV SHORTHAND_MOD SHORTHAND_AND
+%token SHORTHAND_XOR SHORTHAND_OR SHORTHAND_LSHIFT SHORTHAND_RSHIFT TERNARY LINK
+
+%token AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM
+%token EXTERN FLOAT FOR GOTO IF INT LONG REGISTER RETURN SHORT SIGNED SIZEOF STATIC
+%token STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
+
+%token IDENTIFIER NUMBER REAL_NUMBER EXP_NUMBER CHAR_CONSTANT STRING_CONSTANT
+
+%%
+
+struct_declaration
+				  :specifier_qualifier_list struct_declarator_list SEMI_COLON
+				  {printf("\tReduced : struct_declaration -> specifier_qualifier_list struct_declarator_list SEMI_COLON\n");}
+				  ;
+
+specifier_qualifier_list
+						:type_specifier specifier_qualifier_list
+						{printf("\tReduced : specifier_qualifier_list -> type_specifier specifier_qualifier_list\n");}
+						|type_specifier {printf("\tReduced : specifier_qualifier_list -> type_specifier\n");}
+						|type_qualifier specifier_qualifier_list
+						{printf("\tReduced : specifier_qualifier_list -> type_qualifier specifier_qualifier_list\n");}
+						|type_qualifier
+						{printf("\tReduced : specifier_qualifier_list -> type_qualifier\n");}
+						;
+
+struct_declarator_list
+					  :struct_declarator {printf("\tReduced : struct_declarator_list -> struct_declarator\n");}
+					  |struct_declarator_list COMMA struct_declarator
+					  {printf("\tReduced : struct_declarator_list -> struct_declarator_list COMMA struct_declarator\n");}
+					  ;
+
+struct_declarator
+				 :declarator{printf("\tReduced : struct_declarator -> declarator\n");}
+				 |declarator COLON constant_expression {printf("\tReduced : struct_declarator -> declarator COLON constant_expression\n");}
+				 |COLON constant_expression {printf("\tReduced : struct_declarator -> COLON constant_expression\n");}
+				 ;
