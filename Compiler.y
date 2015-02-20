@@ -72,6 +72,13 @@
 
 %token IDENTIFIER NUMBER REAL_NUMBER EXP_NUMBER CHAR_CONSTANT STRING_CONSTANT
 
+%type <varname> IDENTIFIER REAL_NUMBER EXP_NUMBER CHAR_CONSTANT STRING_CONSTANT NUMBER SUBTRACT NEGATION NOT ADD MULTIPLY BITWISE_AND
+%type <varname> multiplicative_expression additive_expression shift_expression relational_expression equality_expression AND_expression
+%type <varname> exclusive_OR_expression inclusive_OR_expression assignment_operator unary_operator expression iteration_statement leftfactor
+%type <varname> logical_AND_expression logical_OR_expression conditional_expression constant_expression constant direct_declarator
+%type <varname> primary_expression postfix_expression unary_expression cast_expression assignment_expression
+
+
 %%
 
 struct_declaration
@@ -100,3 +107,64 @@ struct_declarator
 				 |declarator COLON constant_expression {printf("\tReduced : struct_declarator -> declarator COLON constant_expression\n");}
 				 |COLON constant_expression {printf("\tReduced : struct_declarator -> COLON constant_expression\n");}
 				 ;
+
+				 declarator
+		  :pointer direct_declarator {printf("\tReduced : declarator -> pointer direct_declarator\n");}
+		  |direct_declarator {printf("\tReduced : declarator -> direct_declarator\n");strcat(table[id-1].size,"");}
+		  ;
+
+direct_declarator
+				 :IDENTIFIER
+				 {
+					printf("\tReduced : direct_declarator -> IDENTIFIER\n");
+
+					check($1);
+				    insert($1,"NULL",lines);
+
+				 }
+				 |OPEN_PARANTHESES declarator CLOSE_PARANTHESES {printf("\tReduced : direct_declarator -> OPEN_PARANTHESES declarator CLOSE_PARANTHESES\n");}
+				 |direct_declarator OPEN_SQ_BRACKET constant_expression CLOSE_SQ_BRACKET
+				 {
+                    printf("\tReduced : direct_declarator -> direct_declarator OPEN_SQ_BRACKET constant_expression CLOSE_SQ_BRACKET\n");
+                    printf("%s\n",$3);
+                    strcat(table[id-1].size,$3);
+                    strcat(table[id-1].size,",");
+                 }
+				 |direct_declarator OPEN_SQ_BRACKET CLOSE_SQ_BRACKET
+				 {printf("\tReduced : direct_declarator -> direct_declarator OPEN_SQ_BRACKET CLOSE_SQ_BRACKET\n");}
+				 |direct_declarator OPEN_PARANTHESES parameter_type_list CLOSE_PARANTHESES
+				 {printf("\tReduced : direct_declarator -> direct_declarator OPEN_PARANTHESES parameter_type_list CLOSE_PARANTHESES\n");}
+				 |direct_declarator OPEN_PARANTHESES identifier_list CLOSE_PARANTHESES
+				 {printf("\tReduced : direct_declarator -> direct_declarator OPEN_PARANTHESES identifier_list CLOSE_PARANTHESES\n");}
+				 |direct_declarator OPEN_PARANTHESES CLOSE_PARANTHESES
+				 {printf("\tReduced : direct_declarator -> direct_declarator OPEN_PARANTHESES CLOSE_PARANTHESES\n");}
+				 ;
+
+pointer
+	   :MULTIPLY type_qualifier_list {printf("\tReduced : pointer -> MULTIPLY type_qualifier_list\n");}
+	   |MULTIPLY {printf("\tReduced : pointer -> MULTIPLY\n");}
+	   |MULTIPLY type_qualifier_list pointer {printf("\tReduced : pointer -> MULTIPLY type_qualifier_list pointer\n");}
+	   |MULTIPLY pointer {printf("\tReduced : pointer -> MULTIPLY pointer\n");}
+	   ;
+
+type_qualifier_list
+				   :type_qualifier {printf("\tReduced : type_qualifier_list -> type_qualifier\n");}
+				   |type_qualifier_list type_qualifier {printf("\tReduced : type_qualifier_list -> type_qualifier_list type_qualifier\n");}
+				   ;
+
+parameter_type_list
+				   :parameter_list {printf("\tReduced : parameter_type_list -> parameter_list\n");}
+				   |parameter_list COMMA THREE_DOT {printf("\tReduced : parameter_type_list -> parameter_list COMMA THREE_DOT\n");}
+				   ;
+
+parameter_list
+			  :parameter_declaration {printf("\tReduced : parameter_list -> parameter_declaration\n");}
+			  |parameter_list COMMA parameter_declaration {printf("\tReduced : parameter_list -> parameter_list COMMA parameter_declaration\n");}
+			  ;
+
+parameter_declaration
+					 :declaration_specifiers declarator {printf("\tReduced : parameter_declaration -> declaration_specifiers declarator\n");}
+					 |declaration_specifiers abstract_declarator
+					 {printf("\tReduced : parameter_declaration -> declaration_specifiers abstract_declarator\n");}
+					 |declaration_specifiers {printf("\tReduced : parameter_declaration -> declaration_specifiers\n");}
+					 ;
