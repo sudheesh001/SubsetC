@@ -168,3 +168,216 @@ parameter_declaration
 					 {printf("\tReduced : parameter_declaration -> declaration_specifiers abstract_declarator\n");}
 					 |declaration_specifiers {printf("\tReduced : parameter_declaration -> declaration_specifiers\n");}
 					 ;
+
+jump_statement
+			  :GOTO IDENTIFIER SEMI_COLON {printf("\tReduced : jump_statement -> GOTO IDENTIFIER SEMI_COLON\n");}
+			  |CONTINUE SEMI_COLON {printf("\tReduced : jump_statement -> CONTINUE SEMI_COLON\n");}
+			  |BREAK SEMI_COLON {printf("\tReduced : jump_statement -> BREAK SEMI_COLON\n");}
+			  |RETURN expression SEMI_COLON {printf("\tReduced : jump_statement -> RETURN expression SEMI_COLON\n");}
+			  |RETURN SEMI_COLON {printf("\tReduced : jump_statement -> RETURN SEMI_COLON\n");}
+			  ;
+
+expression
+		  :assignment_expression
+		  {
+            printf("\tReduced : expression -> assignment_expression\n");
+            strcpy($$,$1);
+          }
+		  |expression COMMA assignment_expression {printf("\tReduced : expression -> expression COMMA assignment_expression\n");}
+		  ;
+
+assignment_expression
+					 :conditional_expression
+					 {
+                        printf("\tReduced : assignment_expression -> conditional_expression\n");
+                        strcpy($$,$1);
+                     }
+					 |unary_expression assignment_operator assignment_expression
+					 {
+                        printf("\tReduced : assignment_expression -> unary_expression assignment_operator assignment_expression\n");
+                        printf("%s %s\n",$1,$3);
+                        for(i=0;i<id;i++)
+                        {
+                               printf("%s %d\n",table[i].name,table[i].no_dimen);
+                            if(((!strcmp(table[i].name,$1)) && table[i].no_dimen>0) || ((!strcmp(table[i].name,$3)) && table[i].no_dimen>0))
+                            {
+                                fprintf(fp,"Dimension Mismatch Exiting....\n");
+                                printf("Dimension Mismatch Exiting....\n");
+                                exit(0);
+                            }
+                        }
+                        if(!strcmp($2,"="))
+                        {
+                            fprintf(fp,"%s = %s\n",$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$3);
+
+                            idx++;
+                        }
+
+                        else if(!strcmp($2,"*="))
+                        {
+                            fprintf(fp,"$s = %s*%s\n",$1,$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"*");
+                            idx++;
+                        }
+
+                        else if(!strcmp($2,"/="))
+                        {
+                            fprintf(fp,"$s = %s/%s\n",$1,$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"/");
+                            idx++;
+                        }
+                        else if(!strcmp($2,"-="))
+                        {
+                            fprintf(fp,"$s = %s-%s\n",$1,$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"-");
+                            idx++;
+                        }
+                        else if(!strcmp($2,"+="))
+                        {
+                            fprintf(fp,"%s = %s+%s\n",$1,$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"+");
+                            idx++;
+                        }
+                        else if(!strcmp($2,"%="))
+                        {
+                            fprintf(fp,"$s = %s %% %s\n",$1,$1,$3);
+                            strcpy(quad[idx].result,$1);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"%");
+                            idx++;
+                        }
+
+                         right=0;
+                     }
+					 ;
+
+assignment_operator
+				   :EQUALS
+				   {
+                        printf("\tReduced : assignment_operator -> EQUALS\n");
+                        strcpy($$,"=");
+                        right=1;
+                   }
+				   |SHORTHAND_MUL {printf("\tReduced : assignment_operator -> SHORTHAND_MUL\n");strcpy($$,"*=");}
+				   |SHORTHAND_DIV {printf("\tReduced : assignment_operator -> SHORTHAND_DIV\n");strcpy($$,"/=");}
+				   |SHORTHAND_MOD {printf("\tReduced : assignment_operator -> SHORTHAND_MOD\n");strcpy($$,"%=");}
+				   |SHORTHAND_ADD {printf("\tReduced : assignment_operator -> SHORTHAND_ADD\n");strcpy($$,"+=");}
+				   |SHORTHAND_SUB {printf("\tReduced : assignment_operator -> SHORTHAND_SUB\n");strcpy($$,"-=");}
+				   |SHORTHAND_LSHIFT {printf("\tReduced : assignment_operator -> SHORTHAND_LSHIFT\n");}
+				   |SHORTHAND_RSHIFT {printf("\tReduced : assignment_operator -> SHORTHAND_RSHIFT\n");}
+				   |SHORTHAND_AND {printf("\tReduced : assignment_operator -> SHORTHAND_AND\n");}
+				   |SHORTHAND_XOR {printf("\tReduced : assignment_operator -> SHORTHAND_XOR\n");}
+				   |SHORTHAND_OR {printf("\tReduced : assignment_operator -> SHORTHAND_OR\n");}
+				   ;
+
+conditional_expression
+					  :logical_OR_expression
+					  {
+                        printf("\tReduced : conditional_expression -> logical_OR_expression\n");
+                        strcpy($$,$1);
+					  }
+					  |logical_OR_expression TERNARY expression COLON conditional_expression {printf("\tReduced : conditional_expression -> logical_OR_expression TERNARY expression COLON conditional_expression\n");}
+					  ;
+
+constant_expression
+				   :conditional_expression
+				   {
+                    printf("\tReduced : constant_expression -> conditional_expression\n");
+                    strcpy($$,$1);
+                   }
+				   ;
+
+logical_OR_expression
+					 :logical_AND_expression
+					 {
+                        printf("\tReduced : logical_OR_expression -> logical_AND_expression\n");
+                        strcpy($$,$1);
+                     }
+					 |logical_OR_expression OR logical_AND_expression
+					 {
+                        printf("\tReduced : logical_OR_expression -> logical_OR_expression OR logical_AND_expression\n");
+                        generate();
+                        fprintf(fp,"%s = %s OR %s\n",tname,$1,$3);
+                        strcpy(quad[idx].result,tname);
+                        strcpy(quad[idx].op1,$1);
+                        strcpy(quad[idx].op2,$3);
+                        strcpy(quad[idx].operator,"||");
+                        idx++;
+                        strcpy($$,tname);
+                     }
+					 ;
+
+logical_AND_expression
+					  :inclusive_OR_expression
+					  {
+                        printf("\tReduced : logical_AND_expression -> inclusive_OR_expression\n");
+                        strcpy($$,$1);
+                      }
+					  |logical_AND_expression AND inclusive_OR_expression
+					  {
+                        printf("\tReduced : logical_AND_expression -> logical_AND_expression AND inclusive_OR_expression\n");
+                        generate();
+                        fprintf(fp,"%s = %s AND %s\n",tname,$1,$3);
+                        strcpy(quad[idx].result,tname);
+                        strcpy(quad[idx].op1,$1);
+                        strcpy(quad[idx].op2,$3);
+                        strcpy(quad[idx].operator,"&&");
+                        idx++;
+                        strcpy($$,tname);
+                      }
+					  ;
+
+inclusive_OR_expression
+					   :exclusive_OR_expression
+					   {
+                        printf("\tReduced : inclusive_OR_expression -> exclusive_OR_expression\n");
+                        strcpy($$,$1);
+                       }
+					   |inclusive_OR_expression BITWISE_OR exclusive_OR_expression
+					   {
+                            printf("\tReduced : inclusive_OR_expression -> inclusive_OR_expression BITWISE_OR exclusive_OR_expression\n");
+                            generate();
+                            fprintf(fp,"%s = %s BITWISE_OR %s\n",tname,$1,$3);
+                            strcpy(quad[idx].result,tname);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"|");
+                            idx++;
+                            strcpy($$,tname);
+                       }
+					   ;
+
+exclusive_OR_expression
+					   :AND_expression
+					   {
+                            printf("\tReduced : exclusive_OR_expression -> AND_expression\n");
+                            strcpy($$,$1);
+                       }
+					   |exclusive_OR_expression XOR AND_expression
+					   {
+                            printf("\tReduced : exclusive_OR_expression -> exclusive_OR_expression XOR AND_expression\n");
+                            generate();
+                            fprintf(fp,"%s = %s XOR %s\n",tname,$1,$3);
+                            strcpy(quad[idx].result,tname);
+                            strcpy(quad[idx].op1,$1);
+                            strcpy(quad[idx].op2,$3);
+                            strcpy(quad[idx].operator,"^");
+                            idx++;
+                            strcpy($$,tname);
+                       }
+					   ;
