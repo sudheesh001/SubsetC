@@ -1,0 +1,381 @@
+Documentation of Grammars and Reductions
+--------------------------------------------
+
+TYPE SPECIFIERS
+	INT  : type_specifier -> INT
+	CHAR : type_specifier -> CHAR
+
+IDENTIFIER VARIABLES
+	IDENTIFIER_VARIABLE : declaration_specifiers -> type_specifier
+	IDENTIFIER_VARIABLE : direct_declarator -> IDENTIFIER
+
+COMMA
+	COMMA : declarator -> direct_declarator
+	DIRECT_DECLARATOR : parameter_declaration -> declaration_specifiers declarator
+	DECLARATION_SPECIFIERS : parameter_list -> parameter_declaration
+
+MULTIPLY
+	Reduced : declaration_specifiers -> type_specifier
+
+MULTIPLY
+
+OPEN_PARANTHESES
+CLOSE_PARANTHESES
+	CONTENT : declarator -> pointer direct_declarator
+	Reduced : parameter_declaration -> declaration_specifiers declarator
+	Reduced : parameter_list -> parameter_list COMMA parameter_declaration
+	Reduced : parameter_type_list -> parameter_list
+	Reduced : direct_declarator -> direct_declarator OPEN_PARANTHESES parameter_type_list CLOSE_PARANTHESES
+
+OPEN_BRACES
+	OPEN_BRACES : declarator -> direct_declarator
+
+ARRAYS
+	ARRAY_VARIABLE : declaration_specifiers -> type_specifier
+	ARRAY_VARIABLE : type_specifier -> direct_declarator
+	direct_declarator : direct_declarator -> IDENTIFIER
+	;; Identifies the variable name
+
+	OPEN_SQ_BRACKET
+	CLOSE_SQ_BRACKET
+	EXPRESSION : direct_declarator -> direct_declarator OPEN_SQ_BRACKET CLOSE_SQ_BRACKET
+
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : expression -> assignment_expression
+	EXPRESSION : postfix_expression -> postfix_expression OPEN_SQ_BRACKET expression CLOSE_SQ_BRACKET
+
+EQUALS
+	EQUALS : declarator -> direct_declarator
+
+ARRAY_ASSIGNMENT
+	OPEN_BRACES
+		NUMBER: NUMBER_IN_LOCATION
+			NUMBER : constant -> NUMBER
+			NUMBER : primary_expression -> constant
+			CONSTANT : postfix_expression -> primary_expression
+
+	COMMA
+		EXPRESSION : unary_expression -> postfix_expression
+		EXPRESSION : cast_expression -> unary_expression
+		EXPRESSION : multiplicative_expression -> cast_expression
+		EXPRESSION : additive_expression -> multiplicative_expression
+		EXPRESSION : shift_expression -> additive_expression
+		EXPRESSION : relational_expression -> shift_expression
+		EXPRESSION : equality_expression -> relational_expression
+		EXPRESSION : AND_expression -> equality_expression
+		EXPRESSION : exclusive_OR_expression -> AND_expression
+		EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+		EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+		EXPRESSION : logical_OR_expression -> logical_AND_expression
+		EXPRESSION : conditional_expression -> logical_OR_expression
+		EXPRESSION : assignment_expression -> conditional_expression
+		EXPRESSION : initializer -> assignment_expression
+		EXPRESSION : initializer_list -> initializer
+
+	CLOSE_BRACES
+		CONTENT : unary_expression -> postfix_expression
+		EXPRESSION : cast_expression -> unary_expression
+		EXPRESSION : multiplicative_expression -> cast_expression
+		EXPRESSION : additive_expression -> multiplicative_expression
+		EXPRESSION : shift_expression -> additive_expression
+		EXPRESSION : relational_expression -> shift_expression
+		EXPRESSION : equality_expression -> relational_expression
+		EXPRESSION : AND_expression -> equality_expression
+		EXPRESSION : exclusive_OR_expression -> AND_expression
+		EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+		EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+		EXPRESSION : logical_OR_expression -> logical_AND_expression
+		EXPRESSION : conditional_expression -> logical_OR_expression
+		EXPRESSION : assignment_expression -> conditional_expression
+		EXPRESSION : initializer -> assignment_expression
+		EXPRESSION : initializer_list -> initializer_list COMMA initializer
+		EXPRESSION : initializer -> OPEN_BRACES initializer_list CLOSE_BRACES
+
+		EXPRESSION : init_declarator -> declarator EQUALS initializer
+		EXPRESSION : init_declarator_list -> init_declarator
+
+SEMI_COLON
+	EXPRESSION : declaration -> declaration_specifiers init_declarator_list SEMI_COLON
+	EXPRESSION : declaration_list -> declaration
+
+SEMI_COLON
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : initializer -> assignment_expression
+	EXPRESSION : init_declarator -> declarator EQUALS initializer
+	EXPRESSION : init_declarator_list -> init_declarator
+	EXPRESSION : declaration -> declaration_specifiers init_declarator_list SEMI_COLON
+	EXPRESSION : declaration_list -> declaration_list declaration
+
+ADD
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+
+ADD
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> additive_expression ADD multiplicative_expression
+
+
+WHILE
+	OPEN_PARANTHESES
+	IDENTIFIER
+
+NOT_EQUAL_TO
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+
+AND
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> equality_expression NOT_EQUAL_TO relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+
+GREATER_THAN
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+
+CLOSE_PARANTHESES
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> relational_expression GREATER_THAN shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> logical_AND_expression AND inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : expression -> assignment_expression
+CLOSE_PARANTHESES
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> relational_expression GREATER_THAN_EQUAL shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : expression -> assignment_expression
+selection_statement -> IF OPEN_PARANTHESES expression CLOSE_PARANTHESES statement leftfactor
+
+OPEN_BRACES
+	IF
+	OPEN_PARANTHESES
+	IDENTIFIER a
+	
+GREATER_THAN_EQUAL
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+
+
+
+SHORTHAND_DIV
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : assignment_operator -> SHORTHAND_DIV
+	IDENTIFIER
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	SEMI_COLON
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : assignment_expression -> unary_expression assignment_operator assignment_expression
+
+	EXPRESSION : expression -> assignment_expression
+	EXPRESSION : expression_statement -> expression SEMI_COLON
+	STATEMENT : statement -> expression_statement
+	STATEMENT : statement_list -> statement
+
+
+SHORTHAND_MUL
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : assignment_operator -> SHORTHAND_MUL
+	IDENTIFIER
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	SEMI_COLON
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+	EXPRESSION : equality_expression -> relational_expression
+	EXPRESSION : AND_expression -> equality_expression
+	EXPRESSION : exclusive_OR_expression -> AND_expression
+	EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+	EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+	EXPRESSION : logical_OR_expression -> logical_AND_expression
+	EXPRESSION : conditional_expression -> logical_OR_expression
+	EXPRESSION : assignment_expression -> conditional_expression
+	EXPRESSION : assignment_expression -> unary_expression assignment_operator assignment_expression
+	EXPRESSION : expression -> assignment_expression
+	EXPRESSION : expression_statement -> expression SEMI_COLON
+	EXPRESSION : statement -> expression_statement
+	EXPRESSION : statement_list -> statement_list statement
+
+CLOSE_BRACES
+	STATEMENT : compound_statement -> OPEN_BRACES statement_list CLOSE_BRACES
+	STATEMENT : statement -> compound_statement
+
+ELSE
+	EXPRESSION : leftfactor -> action ELSE statement
+
+IF
+	OPEN_PARANTHESES
+	IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+		IS_EQUAL_TO
+			EXPRESSION : unary_expression -> postfix_expression
+			EXPRESSION : cast_expression -> unary_expression
+			EXPRESSION : multiplicative_expression -> cast_expression
+			EXPRESSION : additive_expression -> multiplicative_expression
+			EXPRESSION : shift_expression -> additive_expression
+			EXPRESSION : relational_expression -> shift_expression
+			EXPRESSION : equality_expression -> relational_expression
+		OR
+			EXPRESSION : unary_expression -> postfix_expression
+			EXPRESSION : cast_expression -> unary_expression
+			EXPRESSION : multiplicative_expression -> cast_expression
+			EXPRESSION : additive_expression -> multiplicative_expression
+			EXPRESSION : shift_expression -> additive_expression
+			EXPRESSION : relational_expression -> shift_expression
+			EXPRESSION : equality_expression -> equality_expression IS_EQUAL_TO relational_expression
+			EXPRESSION : AND_expression -> equality_expression
+			EXPRESSION : exclusive_OR_expression -> AND_expression
+			EXPRESSION : inclusive_OR_expression -> exclusive_OR_expression
+			EXPRESSION : logical_AND_expression -> inclusive_OR_expression
+			EXPRESSION : logical_OR_expression -> logical_AND_expression
+
+IDENTIFIER
+LESS_THAN
+	EXPRESSION : unary_expression -> postfix_expression
+	EXPRESSION : cast_expression -> unary_expression
+	EXPRESSION : multiplicative_expression -> cast_expression
+	EXPRESSION : additive_expression -> multiplicative_expression
+	EXPRESSION : shift_expression -> additive_expression
+	EXPRESSION : relational_expression -> shift_expression
+IDENTIFIER
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+
+
+IDENTIFIER
+	EXPRESSION : leftfactor -> action
+	EXPRESSION : statement -> selection_statement
+	EXPRESSION : statement -> selection_statement
+	EXPRESSION : statement_list -> statement
+DECREMENT
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	EXPRESSION : postfix_expression -> postfix_expression DECREMENT
+
+
+IDENTIFIER
+	INCREMENT
+	EXPRESSION : primary_expression -> IDENTIFIER
+	EXPRESSION : postfix_expression -> primary_expression
+	EXPRESSION : postfix_expression -> postfix_expression INCREMENT
+
+WHILE
+	EXPRESSION : compound_statement -> OPEN_BRACES statement_list CLOSE_BRACES
+	EXPRESSION : statement -> compound_statement
+	EXPRESSION : iteration_statement -> WHILE OPEN_PARANTHESES expression CLOSE_PARANTHESES statement
+	EXPRESSION : statement -> iteration_statement
+	EXPRESSION : statement_list -> statement
+
+RETURN NUMBER
+
+
+
+All the above reduction grammar expressions then result in the following
+
+**************************** SYMBOL TABLE *************************************
+Line No.  Identifier    Data Type	          Dimension  Size  Initial
+
+
+and the Quadruples / Intermediate Code generation as
+
+*********************Quadruple Table*****************************************
+
+         Result  =	  OP1	    OPERATOR    OP2
+
+
+Please see the following
+1. tests/test.c - C program test file which is compiled by the subsetC Compiler.
+2. tests/test.i - Intermediate code generate for the C code passed into the compiler.
+3. tests/test.s - Corresponding assembly code / Code generation of the given program converted from the intermediate code.
